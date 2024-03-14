@@ -1,12 +1,11 @@
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class InterfazGrafica {
-
     private static Estudiantes estudiantes = new Estudiantes();
+    private static LectorArchivo lector = new LectorArchivo();
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Programa de búsqueda de estudiantes");
@@ -26,7 +25,7 @@ public class InterfazGrafica {
             public void actionPerformed(ActionEvent e) {
                 // Implementar la lógica para cargar los datos desde el archivo JSON
                 JOptionPane.showMessageDialog(frame, "Datos cargados desde el archivo JSON");
-                estudiantes.cargarDesdeJson("estudiantes.json");
+                lector.leerArchivo("estudiantes.json");
             }
         });
 
@@ -51,8 +50,7 @@ public class InterfazGrafica {
         panel.add(loadDataButton);
         panel.add(searchButton);
 
-        frame.add(panel, BorderLayout.CENTER);
+        frame.add(panel);
         frame.setVisible(true);
     }
 }
-
