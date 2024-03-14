@@ -1,7 +1,6 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-// Clase para la implementación de la función hash MD5
 public class MD5HashFunction implements HashFunction {
     @Override
     public String hash(String input) {
