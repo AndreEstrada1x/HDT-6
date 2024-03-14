@@ -1,7 +1,6 @@
 import java.util.Map;
 import java.util.TreeMap;
 
-// Clase para la implementación de TreeMap
 public class TreeMapImplementation<K, V> implements MapImplementation<K, V> {
     private Map<K, V> map;
 

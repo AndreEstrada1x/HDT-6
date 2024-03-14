@@ -1,14 +1,12 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-// Clase para la implementación de la función hash SHA-1
 public class SHA1HashFunction implements HashFunction {
     @Override
     public String hash(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             byte[] messageDigest = md.digest(input.getBytes());
-            // Convertir el array de bytes a representación hexadecimal
             StringBuilder hexString = new StringBuilder();
             for (byte b : messageDigest) {
                 String hex = Integer.toHexString(0xff & b);

@@ -5,9 +5,7 @@ public class Estudiante {
     private String postalZip;
     private String pais;
 
-    // Constructor predeterminado
     public Estudiante() {
-        // Puedes inicializar los atributos con valores predeterminados si lo deseas
         this.nombre = "";
         this.telefono = "";
         this.email = "";
@@ -15,7 +13,6 @@ public class Estudiante {
         this.pais = "";
     }
 
-    // Getters y setters (si es necesario)
     public String getNombre() {
         return nombre;
     }
