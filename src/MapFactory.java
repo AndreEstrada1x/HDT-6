@@ -1,7 +1,7 @@
-import java.util.Map;
 import java.util.HashMap;
-import java.util.TreeMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 // Enumeración para los tipos de mapas disponibles
 enum MapType {
@@ -26,4 +26,3 @@ public class MapFactory {
         }
     }
 }
-
