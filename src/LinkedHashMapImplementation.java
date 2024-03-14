@@ -1,7 +1,6 @@
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// Clase para la implementación de LinkedHashMap
 public class LinkedHashMapImplementation<K, V> implements MapImplementation<K, V> {
     private Map<K, V> map;
 
