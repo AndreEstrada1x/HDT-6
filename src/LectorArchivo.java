@@ -1,78 +1,64 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 public class LectorArchivo {
-    private Map<String, Estudiante> mapaEstudiantes;
-
-    public LectorArchivo() {
-        this.mapaEstudiantes = new HashMap<>();
-    }
-
-    public void leerArchivo(String nombreArchivo) {
-        try {
-            String jsonData = new String(Files.readAllBytes(Paths.get(nombreArchivo)));
-            String[] estudiantesArray = jsonData.split("\\},\\s*\\{");
-            
-            for (String estudianteData : estudiantesArray) {
-                Estudiante estudiante = parseEstudiante(estudianteData);
-                mapaEstudiantes.put(estudiante.getPostalZip(), estudiante);
+    public static void cargarEstudiantes(String archivo, String tipoMapa, String tipoHash, Map<String, Estudiante> mapa) {
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            StringBuilder contenidoJSON = new StringBuilder();
+            while ((linea = br.readLine()) != null) {
+                contenidoJSON.append(linea.trim());
             }
-        } catch (IOException e) {
+
+            // Remover los corchetes que rodean el contenido del arreglo JSON
+            String jsonSinCorchetes = contenidoJSON.substring(1, contenidoJSON.length() - 1);
+            // Dividir el contenido en objetos JSON individuales
+            String[] objetosJSON = jsonSinCorchetes.split("\\},\\s*");
+
+            // Recorrer cada objeto JSON
+            for (String objJSON : objetosJSON) {
+                // Limpiar el objeto JSON
+                if (!objJSON.endsWith("}")) {
+                    objJSON += "}";
+                }
+
+                // Extraer los datos relevantes del objeto JSON
+                String[] campos = objJSON.split(",");
+                String nombre = null;
+                String nacionalidad = null;
+                for (String campo : campos) {
+                    String[] partes = campo.split(":");
+                    String clave = partes[0].trim().replaceAll("\"", "");
+                    String valor = partes[1].trim().replaceAll("\"", "");
+                    if (clave.equals("name")) {
+                        nombre = valor;
+                    } else if (clave.equals("country")) {
+                        nacionalidad = valor;
+                    }
+                }
+
+                // Aplicar función hash si es necesario
+                String clave;
+                if (tipoHash.equals("Orgánica")) {
+                    clave = nombre; // Utilizar el nombre como clave directamente
+                } else {
+                    // Aplicar función hash MD5 o SHA-1
+                    HashFunction hashFunction = HashFunctionFactory.createHashFunction(tipoHash);
+                    clave = hashFunction.hash(nombre);
+                }
+
+                // Crear instancia de Estudiante y agregar al mapa
+                if (nombre != null && nacionalidad != null) {
+                    Estudiante estudiante = new Estudiante(nombre, nacionalidad);
+                    mapa.put(clave, estudiante);
+                }
+            }
+            JOptionPane.showMessageDialog(null, "Estudiantes cargados correctamente.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar estudiantes desde el archivo JSON: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private Estudiante parseEstudiante(String estudianteData) {
-        // Eliminamos los caracteres de inicio y fin del objeto JSON
-        estudianteData = estudianteData.replaceAll("\\{\\s*", "");
-        estudianteData = estudianteData.replaceAll("\\s*\\}", "");
-        
-        // Dividimos los campos del estudiante basándonos en las comas
-        String[] campos = estudianteData.split(",\\s*");
-        
-        // Creamos un nuevo objeto Estudiante para almacenar los datos
-        Estudiante estudiante = new Estudiante();
-        
-        // Iteramos sobre los campos y los asignamos al estudiante
-        for (String campo : campos) {
-            // Dividimos el campo en clave y valor basándonos en los dos puntos
-            String[] partes = campo.split(":\\s*");
-            String clave = partes[0];
-            String valor = partes[1];
-            
-            // Eliminamos las comillas que rodean al valor
-            valor = valor.replaceAll("\"", "");
-            
-            // Asignamos el valor al campo correspondiente del estudiante
-            switch (clave) {
-                case "name":
-                    estudiante.setNombre(valor);
-                    break;
-                case "phone":
-                    estudiante.setTelefono(valor);
-                    break;
-                case "email":
-                    estudiante.setEmail(valor);
-                    break;
-                case "postalZip":
-                    estudiante.setPostalZip(valor);
-                    break;
-                case "country":
-                    estudiante.setPais(valor);
-                    break;
-                default:
-                    // No hacemos nada para campos desconocidos
-                    break;
-            }
-        }
-        
-        return estudiante;
-    }    
-
-    public Estudiante buscarEstudiante(String postalZip) {
-        return mapaEstudiantes.get(postalZip);
     }
 }

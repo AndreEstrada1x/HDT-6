@@ -1,15 +1,15 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class SHA1HashFunction implements HashFunction {
+public class MD5Hash implements HashFunction {
     @Override
     public String hash(String input) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] messageDigest = md.digest(input.getBytes());
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hashBytes = md.digest(input.getBytes());
             StringBuilder hexString = new StringBuilder();
-            for (byte b : messageDigest) {
-                String hex = Integer.toHexString(0xff & b);
+            for (byte hashByte : hashBytes) {
+                String hex = Integer.toHexString(0xff & hashByte);
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
