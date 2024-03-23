@@ -16,18 +16,14 @@ public class LectorArchivo {
                 String nombre = (String) estudianteJSON.get("name");
                 String nacionalidad = (String) estudianteJSON.get("country");
 
-                // Aplicar función hash si es necesario
                 String clave;
                 if (tipoHash.equals("Orgánica")) {
-                    // Utilizar el nombre o la nacionalidad como clave directamente
                     clave = tipoMapa.equals("Nombre") ? nombre : nacionalidad;
                 } else {
-                    // Aplicar función hash MD5 o SHA-1
                     HashFunction hashFunction = HashFunctionFactory.createHashFunction(tipoHash);
                     clave = hashFunction.hash(tipoMapa.equals("Nombre") ? nombre : nacionalidad);
                 }
 
-                // Crear instancia de Estudiante y agregar al mapa
                 Estudiante estudiante = new Estudiante(nombre, nacionalidad);
                 mapa.put(clave, estudiante);
             }
